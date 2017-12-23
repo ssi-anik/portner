@@ -5,6 +5,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ServiceListCommand extends Command
 {
@@ -20,8 +21,9 @@ class ServiceListCommand extends Command
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output) {
+		$io = new SymfonyStyle($input, $output);
 		if (!($services = $this->storage->getServices())) {
-			$output->writeln("No service is added yet.");
+			$io->warning("No service is added yet.");
 
 			return;
 		}
