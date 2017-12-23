@@ -1,0 +1,19 @@
+{
+    "name": "anik/portner",
+    "description": "Portner is a PHP CLI application to store, suggest the ports you're going to use for your docker.",
+    "require": {
+        "symfony/console": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Portner\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Syed Sirajul Islam Anik",
+            "email": "sirajul.islam.anik@gmail.com"
+        }
+    ]
+}
