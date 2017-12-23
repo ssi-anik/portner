@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+use Portner\Commands\ApplicationListCommand;
+use Portner\Commands\ApplicationSuggestCommand;
 use Portner\Commands\ServiceAddCommand;
 use Portner\Commands\ServiceListCommand;
 use Portner\Commands\ServiceRemoveCommand;
@@ -37,4 +39,8 @@ $application = new Application('portner', '0.1');
 $application->add(new ServiceListCommand($storage));
 $application->add(new ServiceAddCommand($storage));
 $application->add(new ServiceRemoveCommand($storage));
+
+$application->add(new ApplicationListCommand($storage));
+$application->add(new ApplicationSuggestCommand($storage));
+
 $application->run();

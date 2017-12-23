@@ -7,9 +7,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ServiceListCommand extends Command
+class ApplicationListCommand extends Command
 {
-	private $storage;
+	private $storage = null;
 
 	public function __construct (Storage $storage) {
 		parent::__construct();
@@ -17,22 +17,25 @@ class ServiceListCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName('service:list')->setDescription("Get the list of services.");
+		$this->setName("application:list")->setDescription("Get the list of applications.");
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output) {
 		$io = new SymfonyStyle($input, $output);
-		if (!($services = $this->storage->getServices())) {
-			$io->warning("No service is added yet.");
+		$applications = $this->storage->getApplications();
+		if (!$applications) {
+			$io->warning("No application is saved yet.");
 
 			return;
 		}
 
 		$table = new Table($output);
-		$table->setHeaders([ 'Service Name', 'Actual Port', 'Start host port at' ]);
-		$table->setRows(array_map(function ($row) {
-			return [ 'name' => $row['name'], 'port' => $row['port'], 'expose_at' => $row['expose_at'] ];
-		}, $services));
-		$table->render();
+		$table->setHeaders([ "Application name", "Services", "Ports used" ])->setRows(array_map(function ($row) {
+			return [
+				'name'     => $row['name'],
+				'services' => implode("\n", $row['services']),
+				'ports'    => implode("\n", $row['ports']),
+			];
+		}, $applications));
 	}
 }
