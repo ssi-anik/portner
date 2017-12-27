@@ -38,6 +38,10 @@ class ServiceRemoveCommand extends Command
 			$io->success("Service '{$name}' removed successfully.");
 		} catch (\Exception $exception) {
 			$io->getErrorStyle()->error($exception->getMessage());
+
+			return;
 		}
+
+		return;
 	}
 }

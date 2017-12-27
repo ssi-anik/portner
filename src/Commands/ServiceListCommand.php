@@ -29,9 +29,14 @@ class ServiceListCommand extends Command
 		}
 
 		$table = new Table($output);
-		$table->setHeaders([ 'Service Name', 'Actual Port', 'Start host port at' ]);
+		$table->setHeaders([ 'Service Name', 'Actual Port', 'Host port expose at', 'Last used port' ]);
 		$table->setRows(array_map(function ($row) {
-			return [ 'name' => $row['name'], 'port' => $row['port'], 'expose_at' => $row['expose_at'] ];
+			return [
+				'name'           => $row['name'],
+				'port'           => $row['port'],
+				'expose_at'      => $row['expose_at'],
+				'last_used_port' => array_key_exists('last_used_port', $row) ? $row['last_used_port'] : '',
+			];
 		}, $services));
 		$table->render();
 	}

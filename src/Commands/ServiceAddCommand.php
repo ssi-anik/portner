@@ -20,7 +20,7 @@ class ServiceAddCommand extends Command
 		$this->setName("service:add")->setDefinition([
 			new InputOption('name', null, InputOption::VALUE_REQUIRED),
 			new InputOption('port', null, InputOption::VALUE_REQUIRED),
-			new InputOption('expose-at', null, InputOption::VALUE_OPTIONAL),
+			new InputOption('start-expose-at', null, InputOption::VALUE_OPTIONAL),
 		])->setDescription("Add a new service.");
 	}
 
@@ -28,13 +28,24 @@ class ServiceAddCommand extends Command
 		$io = new SymfonyStyle($input, $output);
 		$name = trim($input->getOption('name'));
 		$port = intval($input->getOption('port'));
+		if (!$name) {
+			$io->getErrorStyle()->error("Name must be present to add a service.");
+
+			return;
+		}
+
 		if (!$port) {
 			$io->getErrorStyle()->error("Port must be present to add a service.");
 
 			return;
 		}
 
-		$exposeStartAt = intval($input->getOption('expose-at')) ?: $port;
+		$exposeStartAt = intval($input->getOption('start-expose-at')) ?: $port;
+		if ($exposeStartAt < 1024) {
+			$io->error("Start expose at below 1024. Must have to specify.");
+
+			return;
+		}
 		try {
 			$this->storage->addService($name, $port, $exposeStartAt);
 			$io->success("Service '{$name}' added successfully.");
