@@ -152,6 +152,21 @@ class Storage
 		return empty($differences) ? true : $differences;
 	}
 
+	public function checkIfApplicationExistsWith ($key, $value) {
+		$availableApplications = $this->getApplications();
+		$foundApplications = [];
+		foreach ($availableApplications as $application) {
+			$innerValue = $application[$key];
+			if (is_array($innerValue) && in_array($value, $innerValue)) {
+				$foundApplications[] = $application;
+			} elseif (is_string($innerValue) && strpos($innerValue, $value) !== false) {
+				$foundApplications[] = $application;
+			}
+		}
+
+		return $foundApplications;
+	}
+
 	protected function getData () {
 		return $this->data;
 	}
