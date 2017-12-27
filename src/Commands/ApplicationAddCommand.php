@@ -96,7 +96,7 @@ class ApplicationAddCommand extends Command
 		if ($isStored) {
 			$io->success("Application '{$name}' added successfully.");
 		}
-//		$this->storage->updateLastUsedPortsOnServices($finalServices, $finalPorts);
+		$this->storage->updateLastUsedPortsOnServices($finalServices, $finalPorts);
 	}
 
 	private function confirmBeforeSave (InputInterface $input, OutputInterface $output) {
@@ -137,7 +137,9 @@ class ApplicationAddCommand extends Command
 			$collection = collect($availableServices);
 			if ($predefinedService = $collection->where('name', $userService)->first()) {
 				do {
-					if (array_key_exists('last_used_port', $predefinedService)) {
+					if (isset($availablePort)) {
+						$availablePort += 1;
+					} elseif (array_key_exists('last_used_port', $predefinedService)) {
 						$availablePort = $predefinedService['last_used_port'] + 1;
 					} else {
 						$availablePort = $predefinedService['expose_at'];
@@ -145,6 +147,7 @@ class ApplicationAddCommand extends Command
 				} while ($this->storage->checkIfPortUsedInApplication($userService, $availablePort));
 
 				$suggestion[] = [ 'service' => $userService, 'port' => $availablePort ];
+				unset($availablePort);
 			}
 		}
 

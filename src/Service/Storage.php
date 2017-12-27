@@ -58,19 +58,16 @@ class Storage
 
 	public function updateLastUsedPortsOnServices ($services, $ports) {
 		$availableServices = $this->getServices();
-		foreach ($availableServices as $service) {
-			if (in_array($service, $services)) {
-				if (array_key_exists('last_used_port', $service)) {
-					$index = array_search($service, $services);
-					$service['last_used_port'] = $ports[$index];
-				}
+		$mergedServices = [];
+		foreach ($availableServices as $availableService) {
+			if (in_array($availableService['name'], $services)) {
+				$index = array_search($availableService['name'], $services);
+				$availableService['last_used_port'] = $ports[$index];
 			}
-		}
 
-		$this->writeToFile([
-			self::SERVICES_KEY    => $availableServices,
-			self::APPLICATION_KEY => $this->getApplications(),
-		]);
+			$mergedServices[] = $availableService;
+		}
+		$this->writeToFile([ self::SERVICES_KEY => $mergedServices, ]);
 	}
 
 	public function removeService ($names) {
@@ -110,10 +107,7 @@ class Storage
 
 		$availableApplications = $this->getApplications();
 		$availableApplications[] = $newApplication;
-		$this->writeToFile([
-			self::SERVICES_KEY    => $this->getServices(),
-			self::APPLICATION_KEY => $availableApplications,
-		]);
+		$this->writeToFile([ self::APPLICATION_KEY => $availableApplications, ]);
 
 		return true;
 	}
@@ -165,7 +159,15 @@ class Storage
 	private function writeToFile ($data) {
 		$file = fopen($this->path, "w+");
 		$previousData = $this->getData();
-		$newData = array_merge($previousData, $data);
+		$newData = [];
+		foreach ($previousData as $key => $value) {
+			if (array_key_exists($key, $data)) {
+				$newData[$key] = $data[$key];
+			} else {
+				$newData[$key] = $value;
+			}
+		}
+		$this->data = $newData;
 		fwrite($file, json_encode($newData));
 		fclose($file);
 	}
