@@ -73,20 +73,24 @@ class Storage
 		]);
 	}
 
-	public function removeService ($name) {
-		$availableServices = $this->getServices();
-		$untouchedServices = [];
-		foreach ($availableServices as $service) {
-			if ($service['name'] != $name) {
-				$untouchedServices[] = $service;
-			}
+	public function removeService ($names) {
+		$availableServices = collect($this->getServices());
+
+		$mismatchedServices = collect($names)
+			->diff($availableServices->whereIn('name', $names)->pluck('name'))
+			->implode(", ");
+
+		if ($mismatchedServices) {
+			throw new \Exception("Service '{$mismatchedServices}' is not available");
 		}
 
-		if (count($untouchedServices) == count($availableServices)) {
-			throw new \Exception("Service '{$name}' does not exist.");
+		$filteredServices = $availableServices->whereNotIn('name', $names);
+
+		if ($filteredServices->count() == $availableServices->count()) {
+			throw new \Exception("Service '{$names}' does not exist.");
 		}
 
-		$this->writeToFile([ self::SERVICES_KEY => $untouchedServices ]);
+		$this->writeToFile([ self::SERVICES_KEY => $filteredServices->all() ]);
 	}
 
 	public function getServices () {
