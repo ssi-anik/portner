@@ -51,6 +51,12 @@ class ApplicationAddCommand extends Command
 				return $service['name'];
 			}, $availableServices);
 
+			if (empty($availableApplicationNames)) {
+				$io->error("You don't have any service.");
+
+				return;
+			}
+
 			$userProvidedServices = $this->askForServicesToUse($input, $output, $availableServiceNames);
 		} else {
 			$userProvidedServices = array_map(function ($service) {

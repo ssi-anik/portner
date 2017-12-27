@@ -30,6 +30,13 @@ class ServiceRemoveCommand extends Command
 			$availableServiceNames = array_map(function ($service) {
 				return $service['name'];
 			}, $this->storage->getServices());
+
+			if (empty($availableServiceNames)) {
+				$io->error("You don't have any service.");
+
+				return;
+			}
+
 			$names = array_unique($this->askUserForServicesToRemove($input, $output, $availableServiceNames));
 		} else {
 			$names = array_filter(array_map('trim', explode(",", $inputNames)));

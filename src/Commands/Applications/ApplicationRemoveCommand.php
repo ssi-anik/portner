@@ -28,10 +28,17 @@ class ApplicationRemoveCommand extends Command
 
 		$inputNames = $input->getOption('name');
 		if (!$inputNames || empty($inputNames)) {
-			$availableApplications = array_map(function ($application) {
+			$availableApplicationNames = array_map(function ($application) {
 				return $application['name'];
 			}, $this->storage->getApplications());
-			$names = array_unique($this->askUserForApplicationsToRemove($input, $output, $availableApplications));
+
+			if (empty($availableApplicationNames)) {
+				$io->error("You don't have any application.");
+
+				return;
+			}
+
+			$names = array_unique($this->askUserForApplicationsToRemove($input, $output, $availableApplicationNames));
 		} else {
 			$names = array_filter(array_map('trim', explode(",", $inputNames)));
 		}
