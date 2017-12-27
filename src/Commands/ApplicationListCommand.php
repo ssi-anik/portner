@@ -3,6 +3,7 @@
 use Portner\Service\Storage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -29,13 +30,20 @@ class ApplicationListCommand extends Command
 			return;
 		}
 
-		$table = new Table($output);
-		$table->setHeaders([ "Application name", "Services", "Ports used" ])->setRows(array_map(function ($row) {
-			return [
-				'name'     => $row['name'],
-				'services' => implode("\n", $row['services']),
-				'ports'    => implode("\n", $row['ports']),
+		$rows = [];
+
+		foreach ($applications as $application) {
+			$rows[] = [
+				'name'     => $application['name'],
+				'services' => implode("\n", $application['services']),
+				'ports'    => implode("\n", $application['ports']),
 			];
-		}, $applications))->render();
+
+			if (next($applications)) {
+				$rows[] = new TableSeparator();
+			}
+		}
+
+		(new Table($output))->setHeaders([ "Application name", "Services", "Ports used" ])->setRows($rows)->render();
 	}
 }
