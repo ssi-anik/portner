@@ -1,4 +1,4 @@
-<?php namespace Portner\Commands;
+<?php namespace Portner\Commands\Applications;
 
 use Portner\Service\Storage;
 use Symfony\Component\Console\Command\Command;

@@ -1,12 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-use Portner\Commands\ApplicationAddCommand;
-use Portner\Commands\ApplicationListCommand;
-use Portner\Commands\ApplicationSuggestCommand;
-use Portner\Commands\ServiceAddCommand;
-use Portner\Commands\ServiceListCommand;
-use Portner\Commands\ServiceRemoveCommand;
+use Portner\Commands\Applications\ApplicationAddCommand;
+use Portner\Commands\Applications\ApplicationListCommand;
+use Portner\Commands\Applications\ApplicationSuggestCommand;
+use Portner\Commands\Services\ServiceAddCommand;
+use Portner\Commands\Services\ServiceListCommand;
+use Portner\Commands\Services\ServiceRemoveCommand;
 use Portner\Service\Storage;
 use Symfony\Component\Console\Application;
 
