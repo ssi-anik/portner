@@ -36,6 +36,6 @@ class ApplicationListCommand extends Command
 				'services' => implode("\n", $row['services']),
 				'ports'    => implode("\n", $row['ports']),
 			];
-		}, $applications));
+		}, $applications))->render();
 	}
 }
