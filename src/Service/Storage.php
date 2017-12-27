@@ -6,6 +6,28 @@ class Storage
 	const SERVICES_KEY = 'services';
 	const APPLICATION_KEY = 'applications';
 
+	/*
+	 * {
+	 *     "services":
+	 * 		[
+	 * 			{
+	 * 				"name": "",
+	 * 				"port": "",
+	 * 				"expose_at": "",
+	 * 				"last_used_port": ""
+	 * 			}
+	 * 		],
+	 *     "applications":
+	 * 		[
+	 * 			{
+	 * 				"name": "",
+	 * 				"services": [],
+	 * 				"ports": []
+	 * 			}
+	 * 		]
+	 * }
+	 * */
+
 	public function __construct ($path, $data) {
 		$this->data = $data;
 		$this->path = $path;
@@ -24,14 +46,34 @@ class Storage
 			}
 
 			if ($service['expose_at'] == $exposeAt) {
-				throw new \Exception("Service '{$name}' expose at port - {$exposeAt} is already assigned to '{$service['name']}'.");
+				throw new \Exception("Service '{$name}' start expose at port - {$exposeAt} is already assigned to '{$service['name']}'.");
 			}
 		}
 
 		$availableServices[] = $newService;
-		$this->writeToFile([ self::SERVICES_KEY => $availableServices ]);
+		$this->writeToFile([
+			self::SERVICES_KEY    => $availableServices,
+			self::APPLICATION_KEY => $this->getApplications(),
+		]);
 
 		return $this;
+	}
+
+	public function updateLastUsedPortsOnServices ($services, $ports) {
+		$availableServices = $this->getServices();
+		foreach ($availableServices as $service) {
+			if (in_array($service, $services)) {
+				if (array_key_exists('last_used_port', $service)) {
+					$index = array_search($service, $services);
+					$service['last_used_port'] = $ports[$index];
+				}
+			}
+		}
+
+		$this->writeToFile([
+			self::SERVICES_KEY    => $availableServices,
+			self::APPLICATION_KEY => $this->getApplications(),
+		]);
 	}
 
 	public function removeService ($name) {
@@ -51,11 +93,68 @@ class Storage
 	}
 
 	public function getServices () {
-		return $this->data[self::SERVICES_KEY];
+		return array_key_exists(self::SERVICES_KEY, $this->data) ? $this->data[self::SERVICES_KEY] : [];
 	}
 
 	public function getApplications () {
-		return $this->data[self::APPLICATION_KEY];
+		return array_key_exists(self::APPLICATION_KEY, $this->data) ? $this->data[self::APPLICATION_KEY] : [];
+	}
+
+	public function saveNewApplication ($name, $services, $ports) {
+		$newApplication = [
+			'name'     => $name,
+			'services' => $services,
+			'ports'    => $ports,
+		];
+
+		$availableApplications = $this->getApplications();
+		$availableApplications[] = $newApplication;
+		$this->writeToFile([
+			self::SERVICES_KEY    => $this->getServices(),
+			self::APPLICATION_KEY => $availableApplications,
+		]);
+
+		return true;
+	}
+
+	public function checkIfApplicationNameExists ($name) {
+		foreach ($this->getApplications() as $application) {
+			if ($name == $application['name']) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function checkIfPortUsedInApplication ($service, $port) {
+		foreach ($this->getApplications() as $application) {
+			$services = $application['services'];
+			$ports = $application['ports'];
+			if (!in_array($service, $services)) {
+				continue;
+			}
+
+			$index = array_search($service, $services);
+			if ($ports[$index] == $port) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function checkIfServiceExists ($providedServices) {
+		if (!is_array($providedServices)) {
+			$providedServices = (array) $providedServices;
+		}
+
+		$availableServiceNames = array_map(function ($service) {
+			return $service['name'];
+		}, $this->getServices());
+		$differences = array_diff($providedServices, $availableServiceNames);
+
+		return empty($differences) ? true : $differences;
 	}
 
 	protected function getData () {
