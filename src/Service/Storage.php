@@ -39,22 +39,19 @@ class Storage
 			'port'      => $port,
 			'expose_at' => $exposeAt,
 		];
-		$availableServices = $this->getServices();
-		foreach ($availableServices as $service) {
-			if ($service['name'] == $name) {
-				throw new \Exception("Service '{$name}' already exists.");
-			}
+		$availableServices = collect($this->getServices());
 
-			if ($service['expose_at'] == $exposeAt) {
-				throw new \Exception("Service '{$name}' start expose at port - {$exposeAt} is already assigned to '{$service['name']}'.");
-			}
+		if ($availableServices->where('name', $name)->first()) {
+			throw new \Exception("Service '{$name}' already exists.");
 		}
 
-		$availableServices[] = $newService;
-		$this->writeToFile([
-			self::SERVICES_KEY    => $availableServices,
-			self::APPLICATION_KEY => $this->getApplications(),
-		]);
+		if ($service = $availableServices->where('expose_at', $exposeAt)->first()) {
+			throw new \Exception("Service '{$name}' start expose at port - {$exposeAt} is already assigned to '{$service['name']}'.");
+		}
+
+		$newServicesArray = $availableServices->push($newService)->toArray();
+
+		$this->writeToFile([ self::SERVICES_KEY => $newServicesArray, ]);
 
 		return $this;
 	}
