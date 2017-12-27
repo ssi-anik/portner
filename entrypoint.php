@@ -3,6 +3,7 @@
 
 use Portner\Commands\Applications\ApplicationAddCommand;
 use Portner\Commands\Applications\ApplicationListCommand;
+use Portner\Commands\Applications\ApplicationRemoveCommand;
 use Portner\Commands\Applications\ApplicationSearchCommand;
 use Portner\Commands\Applications\ApplicationSuggestCommand;
 use Portner\Commands\Services\ServiceAddCommand;
@@ -46,5 +47,6 @@ $application->add(new ApplicationListCommand($storage));
 $application->add(new ApplicationSuggestCommand($storage));
 $application->add(new ApplicationAddCommand($storage));
 $application->add(new ApplicationSearchCommand($storage));
+$application->add(new ApplicationRemoveCommand($storage));
 
 $application->run();

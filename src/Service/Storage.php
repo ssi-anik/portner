@@ -78,14 +78,10 @@ class Storage
 			->implode(", ");
 
 		if ($mismatchedServices) {
-			throw new \Exception("Service '{$mismatchedServices}' is not available");
+			throw new \Exception("Service '{$mismatchedServices}' is not available.");
 		}
 
 		$filteredServices = $availableServices->whereNotIn('name', $names);
-
-		if ($filteredServices->count() == $availableServices->count()) {
-			throw new \Exception("Service '{$names}' does not exist.");
-		}
 
 		$this->writeToFile([ self::SERVICES_KEY => $filteredServices->all() ]);
 	}
@@ -165,6 +161,22 @@ class Storage
 		}
 
 		return $foundApplications;
+	}
+
+	public function removeApplication ($names) {
+		$availableApplications = collect($this->getApplications());
+
+		$mismatchedServices = collect($names)
+			->diff($availableApplications->whereIn('name', $names)->pluck('name'))
+			->implode(", ");
+
+		if ($mismatchedServices) {
+			throw new \Exception("Application '{$mismatchedServices}' is not available.");
+		}
+
+		$filteredApplications = $availableApplications->whereNotIn('name', $names);
+
+		$this->writeToFile([ self::APPLICATION_KEY => $filteredApplications->all() ]);
 	}
 
 	protected function getData () {
