@@ -17,7 +17,7 @@ class ServiceAddCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName("service:add")->setDefinition([
+		$this->setName("service:add")->setAliases([ 'sa' ])->setDefinition([
 			new InputOption('name', null, InputOption::VALUE_REQUIRED),
 			new InputOption('port', null, InputOption::VALUE_REQUIRED),
 			new InputOption('start-expose-at', null, InputOption::VALUE_OPTIONAL),

@@ -18,7 +18,7 @@ class ServiceRemoveCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName("service:remove")->setDefinition([
+		$this->setName("service:remove")->setAliases([ 'sr' ])->setDefinition([
 			new InputOption('name', null, InputOption::VALUE_REQUIRED),
 		])->setDescription("Remove a service.");
 	}

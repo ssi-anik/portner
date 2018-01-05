@@ -20,6 +20,7 @@ class ApplicationSearchCommand extends Command
 
 	protected function configure () {
 		$this->setName("application:search")
+			 ->setAliases([ 'as' ])
 			 ->setDescription("Search within applications by name or port or service")
 			 ->setDefinition([
 				 new InputOption('name', null, InputOption::VALUE_REQUIRED),

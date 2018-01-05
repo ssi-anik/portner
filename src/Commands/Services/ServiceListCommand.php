@@ -18,7 +18,7 @@ class ServiceListCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName('service:list')->setDescription("Get the list of services.");
+		$this->setName('service:list')->setAliases([ 'sl' ])->setDescription("Get the list of services.");
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output) {
@@ -41,7 +41,7 @@ class ServiceListCommand extends Command
 				$rows[] = new TableSeparator();
 			}
 		}
-		
+
 		(new Table($output))->setHeaders([ 'Service Name', 'Actual Port', 'Host port expose at', 'Last used port' ])
 							->setRows($rows)
 							->render();

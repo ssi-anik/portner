@@ -37,7 +37,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 $storage = new Storage($storageFileAbsolutePath, $stored);
 
-$application = new Application('portner', '0.1');
+$application = new Application('portner', '1.0');
 $application->add(new ServiceListCommand($storage));
 $application->add(new ServiceAddCommand($storage));
 $application->add(new ServiceRemoveCommand($storage));

@@ -21,7 +21,7 @@ class ApplicationAddCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName("application:add")->setDescription("Add an application")->setDefinition([
+		$this->setName("application:add")->setAliases([ 'aa' ])->setDescription("Add an application")->setDefinition([
 			new InputOption('name', null, InputOption::VALUE_REQUIRED),
 			new InputOption('services', null, InputOption::VALUE_REQUIRED),
 		]);

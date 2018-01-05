@@ -18,7 +18,7 @@ class ApplicationListCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName("application:list")->setDescription("Get the list of applications.");
+		$this->setName("application:list")->setAliases([ 'al' ])->setDescription("Get the list of applications.");
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output) {

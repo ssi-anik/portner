@@ -18,9 +18,12 @@ class ApplicationRemoveCommand extends Command
 	}
 
 	protected function configure () {
-		$this->setName("application:remove")->setDescription("Remove an application")->setDefinition([
-			new InputOption('name', null, InputOption::VALUE_REQUIRED),
-		]);
+		$this->setName("application:remove")
+			 ->setAliases([ 'ar' ])
+			 ->setDescription("Remove an application")
+			 ->setDefinition([
+				 new InputOption('name', null, InputOption::VALUE_REQUIRED),
+			 ]);
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output) {
