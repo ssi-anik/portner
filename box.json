@@ -1,0 +1,22 @@
+{
+    "chmod": "0755",
+    "directories": [
+        "src"
+    ],
+    "files": [
+        "LICENSE"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": [
+                "Tests"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "git-version": "0.1",
+    "main": "application.php",
+    "output": "dist/portner.phar",
+    "stub": true
+}
