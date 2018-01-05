@@ -51,7 +51,7 @@ class ApplicationAddCommand extends Command
 				return $service['name'];
 			}, $availableServices);
 
-			if (empty($availableApplicationNames)) {
+			if (empty($availableServiceNames)) {
 				$io->error("You don't have any service.");
 
 				return;
